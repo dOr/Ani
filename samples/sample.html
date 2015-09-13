@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Sample Ani.js</title>
+        <style>
+            body {
+                margin: 0;
+                background-color: black;
+                overflow: hidden;
+            }
+            div {
+                position: absolute;
+                border-radius: 50%;
+            }
+        </style>
+    </head>
+    <body></body>
+    <script type="text/javascript" src="../src/ani.js"></script>
+    <script>
+        var _block = false;
+
+        // window.addEventListener('mousemove', function(d) {
+        //     if (_block) return;
+        //     _block = true;
+        //     createDot(d.pageX, d.pageY);
+        //     setTimeout(function() {
+        //         _block = false;
+        //     }, 20)
+        // })
+        
+        setInterval(randDot, 50);
+
+        function randDot() {
+            var x = Math.floor(Math.random() * window.innerWidth);
+            var y = Math.floor(Math.random() * window.innerHeight);
+            createDot(x, y);
+        }
+
+        function createDot(x, y) {
+            var el = document.createElement('div');
+            el.style.top = y + 'px';
+            el.style.left = x + 'px';
+            document.body.appendChild(el);
+            return Ani(el).fade(1, 0.05)
+                .growX('0px', '100px')
+                .growY('0px', '100px')
+                .move('0px', '500px')
+                .bgColor(randColor(), randColor(), 0, 1)
+                .duration(2000)
+                .animate()
+                .then(killDot);
+
+            function killDot() {
+                el.remove();
+            }
+        }
+
+        function randColor(r, g, b) {
+            // return "FFFFFF"
+            return ""
+                + componentToHex(Math.floor(Math.random() * 256))
+                + componentToHex(Math.floor(Math.random() * 256))
+                + componentToHex(Math.floor(Math.random() * 256));
+        }
+
+        function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+    </script>
+</html>
