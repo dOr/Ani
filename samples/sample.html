@@ -7,10 +7,13 @@
                 margin: 0;
                 background-color: black;
                 overflow: hidden;
+                -webkit-user-select: none;
             }
             div {
                 position: absolute;
                 border-radius: 50%;
+                background-color: black;
+                -webkit-user-select: none;
             }
         </style>
     </head>
@@ -18,21 +21,61 @@
     <script type="text/javascript" src="../src/ani.js"></script>
     <script>
         var _block = false;
+        var _drawing = true;
 
-        // window.addEventListener('mousemove', function(d) {
-        //     if (_block) return;
+        var x = Math.floor(Math.random() * window.innerWidth);
+        var y = Math.floor(Math.random() * window.innerHeight);
+
+        var ax = 1;
+        var ay = 1;
+        // window.addEventListener('mousedown', function(d) {
+        //     _drawing = true;
+        //     if (_block || !_drawing) return;
         //     _block = true;
         //     createDot(d.pageX, d.pageY);
         //     setTimeout(function() {
         //         _block = false;
-        //     }, 20)
-        // })
+        //     }, 0)
+        // });
+
+        // window.addEventListener('mouseup', function(d) {
+        //     _drawing = false;
+        // });
+
+        window.addEventListener('mousemove', function(d) {
+            if (_block || !_drawing) return;
+            _block = true;
+            createDot(d.pageX, d.pageY);
+            setTimeout(function() {
+                _block = false;
+            }, 25)
+        })
         
         setInterval(randDot, 50);
 
         function randDot() {
-            var x = Math.floor(Math.random() * window.innerWidth);
-            var y = Math.floor(Math.random() * window.innerHeight);
+            if (x > window.innerWidth) {
+                ax = -1;
+            }
+            if (y > window.innerHeight) {
+                ay = -1;
+            }
+
+            if (x < 0) {
+                ax = 1;
+            }
+
+            if (y < 0) {
+                ay = 1;
+            }
+
+            var dx = ax * Math.floor(Math.random() * 5) + 0;
+            var dy = ay * Math.floor(Math.random() * 5) + 0;
+            x = x + dx;
+            y = y + dy;
+
+
+
             createDot(x, y);
         }
 
@@ -40,23 +83,32 @@
             var el = document.createElement('div');
             el.style.top = y + 'px';
             el.style.left = x + 'px';
+            var x = 0;
+            var y = 0;
+            var o = 0;
             document.body.appendChild(el);
-            return Ani(el).fade(1, 0.05)
+            return Ani(el).fade(1, 0.5)
                 .growX('0px', '100px')
                 .growY('0px', '100px')
-                .move('0px', '500px')
+                // .move('0px', '0px')
                 .bgColor(randColor(), randColor(), 0, 1)
                 .duration(2000)
                 .animate()
                 .then(killDot);
 
             function killDot() {
-                el.remove();
+                Ani(el).fade(0.5, 0)
+                    .growX('100px', '200px')
+                    .growY('100px', '200px')
+                    // .bgColor('FFFFFF',randColor(),  0, 1)
+                    .duration(2000)
+                    .animate()
+                    .then(el.remove.bind(el))
             }
         }
 
         function randColor(r, g, b) {
-            // return "FFFFFF"
+            // return "000000"
             return ""
                 + componentToHex(Math.floor(Math.random() * 256))
                 + componentToHex(Math.floor(Math.random() * 256))
